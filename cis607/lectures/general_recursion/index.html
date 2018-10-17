@@ -27,6 +27,8 @@
 			  <section>
 			    <h3>General Recursion and PCF</h3>
 
+			    <p>CIS 607, Fall 2018</p>
+
 			    <p><a href="https://maniaphobic.github.io/cis607/lectures/general_recursion/">https://maniaphobic.github.io/cis607/lectures/general_recursion/</a></p>
 			  </section>
 
@@ -81,10 +83,11 @@
 			      </tr>
 			      <tr class="fragment">
 				<td><b>System T</b> (PFPL §9)</td>
-				<td>natural numbers, higher-order
-				functions, products, sums, booleans,
-				enumerations, options, totality, type
-				safety</td>
+				<td>totality, type safety,
+				higher-order functions, natural
+				numbers, encoded types of ℕ (unit,
+				void, product, sum, boolean,
+				option)</td>
 			      </tr>
 			      <tr class="fragment">
 				<td><b>System M</b> (PFPL §15)</td>
@@ -94,15 +97,19 @@
 			      </tr>
 			      <tr class="fragment">
 				<td><b>System F</b> (PFPL §16)</td>
-				<td><i>System M plus</i> parametric polymorphic types</td>
+				<td><i>System M plus</i> parametric
+				polymorphism and universal
+				  quantification <i>(subsuming all prior types)</i></td>
 			      </tr>
 			      <tr class="fragment">
 				<td><b>System FE</b> (PFPL §17)</td>
-				<td><i>System F plus</i> existentially-quantified types</td>
+				<td><i>System F plus</i> existential
+				quantification <i>(i.e., data
+				    abstraction)</i></td>
 			      </tr>
 			      <tr class="fragment">
 				<td><b>System F<sub>ω</sub></b> (PFPL §18)</td>
-				<td><i>System FE plus</i> universally-quantified types</td>
+				<td><i>System FE plus</i> higher kinds <i>(i.e., quantification over type constructors)</i></td>
 			      </tr>
 			    </table>
 			  </section>
@@ -117,7 +124,7 @@
 			      <li class="fragment">Increase expressive power (i.e., more concise code -- think Haskell vs. Java)</li>
 			    </ul>
 
-			    <p class="fragment">... while maintaining type safety and totality</p>
+			    <p class="fragment">... while maintaining totality and type safety</p>
 			  </section>
 
 			  <section>
