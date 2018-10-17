@@ -37,7 +37,7 @@
 
 			    <ul>
 			      <li class="fragment">Review where we've been</li>
-			      <li class="fragment">Explore concepts, intuitions, implications</li>
+			      <li class="fragment">Explore concepts, intuitions, and implications of general recursion</li>
 			      <li class="fragment">Dive into details</li>
 			    </ul>
 			  </section>
@@ -47,26 +47,26 @@
 
 			    <div style="font-size: 75%">
 			      <ul>
-				<li class="fragment">PFPL §19</li>
+				<li>PFPL §19</li>
 
-				<li class="fragment"><a href="https://www.cs.cmu.edu/~rwh/courses/ppl/">CMU
+				<li><a href="https://www.cs.cmu.edu/~rwh/courses/ppl/">CMU
 				    15-312</a> <a href="https://www.cs.cmu.edu/~rwh/courses/ppl/recitations/">recitation notes</a> by <a href="https://www.cs.cmu.edu/~rwh/courses/ppl/recitations/rec07-partiality-jezimmer.pdf">Zimmerman</a> &amp; <a href="https://www.cs.cmu.edu/~rwh/courses/ppl/recitations/rec7-notes.pdf">Yuan</a></li>
 
-				<li class="fragment"><a href="https://www.vex.net/~trebla/haskell/fix.xhtml">You
+				<li><a href="https://www.vex.net/~trebla/haskell/fix.xhtml">You
 				  could have re-invented fix too!</a>
 				  by Albert Y. C. Lai</li>
 
-				<li class="fragment"><a href="https://hisham.hm/2011/04/04/understanding-at-last-the-y-combinator-a-programmer-friendly-perspective/">Understanding,
+				<li><a href="https://hisham.hm/2011/04/04/understanding-at-last-the-y-combinator-a-programmer-friendly-perspective/">Understanding,
 				  at last, the Y Combinator - a
 				  programmer-friendly perspective</a>
 				  by Hisham Muhammad</li>
 
-				<li class="fragment"><a href="https://en.wikibooks.org/wiki/Haskell/Fix_and_recursion">Fix
+				<li><a href="https://en.wikibooks.org/wiki/Haskell/Fix_and_recursion">Fix
 				  and recursion</a> in
 				  the <a href="https://en.wikibooks.org/wiki/Haskell">Haskell
 				  wikibook</a></li>
 
-				<li class="fragment"><a href="http://web.cs.iastate.edu/~lumpe/ComS541/Resources/Lectures/FixedPoints.pdf">Fixed point lecture</a> by Markus Lumpe</li>
+				<li><a href="http://web.cs.iastate.edu/~lumpe/ComS541/Resources/Lectures/FixedPoints.pdf">Fixed point lecture</a> by Markus Lumpe</li>
 
 			      </ul>
 			  </section>
@@ -84,10 +84,10 @@
 			      <tr class="fragment">
 				<td><b>System T</b> (PFPL §9)</td>
 				<td>totality, type safety,
-				higher-order functions, natural
-				numbers, encoded types of ℕ (unit,
-				void, product, sum, boolean,
-				option)</td>
+				higher-order functions, types (natural
+				numbers, primitive recursion, product,
+				sum, unit, void, boolean, etc.),
+				lazy+eager evaluation</td>
 			      </tr>
 			      <tr class="fragment">
 				<td><b>System M</b> (PFPL §15)</td>
@@ -99,7 +99,8 @@
 				<td><b>System F</b> (PFPL §16)</td>
 				<td><i>System M plus</i> parametric
 				polymorphism and universal
-				  quantification <i>(subsuming all prior types)</i></td>
+				quantification <i>(subsuming all prior
+				type definitions)</i></td>
 			      </tr>
 			      <tr class="fragment">
 				<td><b>System FE</b> (PFPL §17)</td>
@@ -120,7 +121,7 @@
 			    <p class="fragment">With each refinement, we:</p>
 
 			    <ul>
-			      <li class="fragment">Increase generality and reduce type-specific syntax (i.e., derive language constructs from general primitives)</li>
+			      <li class="fragment">Increase generality and reduce type-specific syntax (i.e., derive language constructs from primitives)</li>
 			      <li class="fragment">Increase expressive power (i.e., more concise code -- think Haskell vs. Java)</li>
 			    </ul>
 
@@ -201,10 +202,9 @@
 			      on <i>primitive recursion</i>:</p>
 
 			    <ul>
-			      <li class="fragment">System
-				  T's <code>rec()</code> (recursor)
+			      <li class="fragment">System T's recursor
 				  construct (PFPL §9)</li>
-			      <li class="fragment">Recursion without <i>self-reference</i> <i>TRUE?</i></li>
+			      <li class="fragment">Recursion without <i>self-reference</i> <i>[TRUE?]</i></li>
 			      <li class="fragment">Iconic example
 			      functions: addition, multiplication,
 			      factorial</li>
@@ -237,40 +237,40 @@
 			    named <code>fix</code> that takes a
 			    function and returns the same function</p>
 
-			    <p class="fragment">Big F is technically a <i>functional</i></p>
+			    <p class="fragment">Big F is technically a <i><a href="https://en.wikipedia.org/wiki/Higher-order_function">functional</a></i></p>
 
-			    <p class="fragment">
+			    <div class="fragment">
 			      Help!
 
 			      <ul class="fragment">
 				<li>Why does general recursion beget partiality?</li>
 				<li>How is <code>fix</code> fundamentally different from <code>rec</code>?</li>
 			      </ul>
-			    </p>
+			    </div>
 			  </section>
 
 			  <section>
 			    <h3>Wait, what just happened?</h3>
 
-			    <p class="fragment">We mandated
-			    that <code>rec()</code> carry around its
-			      base and recursive cases <i>TRUE?</i></p>
+			    <p class="fragment"><code>rec()</code>
+			      carries around its base and recursive
+			      cases <i>[TRUE?]</i></p>
 
 			    <p class="fragment"><code>fix</code>
 			    expects its function argument to
-			    supply all of the code <i>TRUE?</i></p>
+			    supply all of the code <i>[TRUE?]</i></p>
 			  </section>
 
 			  <section>
 			    <h3>Self-reference begets partiality</h3>
 
-			    <p><i>Per Jake Zimmerman</i></p>
+			    <p><i>Per <a href="https://www.cs.cmu.edu/~rwh/courses/ppl/recitations/rec07-partiality-jezimmer.pdf">Jake Zimmerman</a></i></p>
 
-			    <p class="fragment"><code>fix</code> gave us <i>partiality</i> because it also gave us <i>self-reference</i></p>
+			    <p class="fragment"><code>fix</code> provides <i>partiality</i> because it also provides <i>self-reference</i></p>
 
 			    <p class="fragment">A self-referential expression is isomorphic to having an expression with <i>itself in scope</i></p>
 
-			    <p class="fragment">Help! Why does self-reference provide partiality?</p>
+			    <p class="fragment">Help! Why, exactly, does self-reference provide partiality?</p>
 			  </section>
 
 			  <section>
@@ -284,7 +284,7 @@
 			    (inscrutably) argues that PCF is
 			    universal (i.e., can interpret itself)</p>
 
-			    <p class="fragment">Help! Why does partiality imply universality?</p>
+			    <p class="fragment">Help! Why, exactly, does partiality imply universality?</p>
 			  </section>
 
 			  <section>
@@ -298,14 +298,15 @@
 
 			    <p class="fragment">The challenge is
 			    shrinking the computation closer to
-			    termination at each step</p>
+			    termination at each step, thereby avoiding
+			    divergence</p>
 			  </section>
 
 			  <section>
 			    <h3>Haskell's <code>fix</code></h3>
 
-			    <p class="fragment">Haskell's <code>Data.Function</code>
-			    module defines <code>fix</code>:</p>
+			    <p class="fragment">Haskell's <code><a href="https://hackage.haskell.org/package/base-4.12.0.0/docs/Data-Function.html">Data.Function</a></code>
+			    package defines <code>fix</code>:</p>
 
 			    <pre class="fragment"><code>Prelude> import Data.Function
 Prelude Data.Function> :info fix
@@ -320,25 +321,11 @@ fix :: (a -> a) -> a</code></pre>
 			      and I'll give you an a"</p>
 			  </section>
 
-			  <!--
-			  <section>
-			    <h3>Let's Define Our Own</h3>
-
-			    <pre class="fragment"><code>Prelude> let converge f = let x = f x in x
-Prelude> :info converge
-converge :: (t -> t) -> t</code></pre>
-
-			    <p class="fragment">I consider <code>converge</code> a more intuitive notion</p>
-
-			    <p class="fragment">Same shape, different type variable</p>
-			  </section>
-			  -->
-
 			  <section>
 			    <h3>Factorial using <code>fix</code></h3>
 
 			    <p class="fragment" style="text-align: left ; font-size: 50%">
-			      <code>Prelude> let fact = fix (\f -> \n -> if n == 0 then 1 else n * f <span style="border: 1px solid white">(n-1)</span>)<br />
+			      <code>Prelude> let fact = fix (\f -> \n -> if n == 0 then 1 else n * f <span style="background: white ; color: black">(n-1)</span>)<br />
 Prelude> :info fact<br />
 fact :: (Eq p, Num p) => p -> p<br />
 Prelude> fact 5<br />
@@ -350,7 +337,7 @@ Prelude> fact 5<br />
 			    to itself, and "n", an integer, and
 			      computes <code>n!</code></p>
 
-			    <p class="fragment">I <span style="border: 1px solid white">highlighted</span> where the computation "shrinks" toward termination</p>
+			    <p class="fragment">I <span style="background: white ; color: black">highlighted</span> where the computation "shrinks" toward termination</p>
 			  </section>
 
 			  <section>
@@ -362,7 +349,7 @@ Prelude> fact 5<br />
 			      <p>1/1! + 2/2! + 3/3! + ...</p>
 			    </div>
 
-			    <p style="font-size: 50% ; text-align: left"><code class="fragment">Prelude> let series = fix (\f -> \i -> if i == 1 then 1 else i/(fact i) + f <span style="border: 1px solid white">(i - 1)</span>)<br />
+			    <p style="font-size: 50% ; text-align: left"><code class="fragment">Prelude> let series = fix (\f -> \i -> if i == 1 then 1 else i/(fact i) + f <span style="background: white ; color: black">(i - 1)</span>)<br />
 Prelude> series 1<br />
 1.0<br />
 Prelude> series 2<br />
@@ -388,46 +375,7 @@ Prelude> series 10<br />
 
 			    <pre class="fragment"><code>fix (\n -> n + 1)</code></pre>
 
-			    <p class="fragment">Answer: their computations don't shrink each iteration</p>
-			  </section>
-
-			  <section>
-			    <h3>Resources for grokking fixed-points</h3>
-
-			    <div style="font-size: 75%">
-			      <p class="fragment">
-				<a href="https://www.cs.cmu.edu/~rwh/courses/ppl/">CMU
-				15-312</a> recitation notes
-				by <a href="https://www.cs.cmu.edu/~rwh/courses/ppl/recitations/rec07-partiality-jezimmer.pdf">Jake
-				Zimmerman</a>
-				and <a href="https://www.cs.cmu.edu/~rwh/courses/ppl/recitations/rec7-notes.pdf">Charles
-				Yuan</a>
-			      </p>
-
-			      <p class="fragment">
-				<a href="https://www.vex.net/~trebla/haskell/fix.xhtml">You
-				  could have re-invented fix too!</a> by
-				Albert Y. C. Lai
-			      </p>
-
-			      <p class="fragment">
-				<a href="https://hisham.hm/2011/04/04/understanding-at-last-the-y-combinator-a-programmer-friendly-perspective/">Understanding,
-				  at last, the Y Combinator - a
-				  programmer-friendly perspective</a> by
-				Hisham Muhammad
-			      </p>
-
-			      <p class="fragment">
-				<a href="https://en.wikibooks.org/wiki/Haskell/Fix_and_recursion">Fix
-				  and recursion</a> in
-				  the <a href="https://en.wikibooks.org/wiki/Haskell">Haskell
-				  wikibook</a>
-			      </p>
-
-			      <p class="fragment">
-				<a href="http://web.cs.iastate.edu/~lumpe/ComS541/Resources/Lectures/FixedPoints.pdf">Fixed point lecture</a> by Markus Lumpe
-			      </p>
-			    </div>
+			    <p class="fragment">Their computations don't shrink each iteration</p>
 			  </section>
 
 			  <section>
