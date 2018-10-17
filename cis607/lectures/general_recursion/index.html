@@ -1,0 +1,457 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+			  <section>
+			    <h3>General Recursion and PCF</h3>
+
+			    <p><a href="https://maniaphobic.github.io/cis607/lectures/general_recursion/">https://maniaphobic.github.io/cis607/lectures/general_recursion/</a></p>
+			  </section>
+
+			  <section>
+			    <h3>Structure of this presentation</h3>
+
+			    <ul>
+			      <li class="fragment">Review where we've been</li>
+			      <li class="fragment">Explore concepts, intuitions, implications</li>
+			      <li class="fragment">Dive into details</li>
+			    </ul>
+			  </section>
+
+			  <section>
+			    <h3>Sources and inspirations</h3>
+
+			    <div style="font-size: 75%">
+			      <ul>
+				<li class="fragment">PFPL §19</li>
+
+				<li class="fragment"><a href="https://www.cs.cmu.edu/~rwh/courses/ppl/">CMU
+				    15-312</a> <a href="https://www.cs.cmu.edu/~rwh/courses/ppl/recitations/">recitation notes</a> by <a href="https://www.cs.cmu.edu/~rwh/courses/ppl/recitations/rec07-partiality-jezimmer.pdf">Zimmerman</a> &amp; <a href="https://www.cs.cmu.edu/~rwh/courses/ppl/recitations/rec7-notes.pdf">Yuan</a></li>
+
+				<li class="fragment"><a href="https://www.vex.net/~trebla/haskell/fix.xhtml">You
+				  could have re-invented fix too!</a>
+				  by Albert Y. C. Lai</li>
+
+				<li class="fragment"><a href="https://hisham.hm/2011/04/04/understanding-at-last-the-y-combinator-a-programmer-friendly-perspective/">Understanding,
+				  at last, the Y Combinator - a
+				  programmer-friendly perspective</a>
+				  by Hisham Muhammad</li>
+
+				<li class="fragment"><a href="https://en.wikibooks.org/wiki/Haskell/Fix_and_recursion">Fix
+				  and recursion</a> in
+				  the <a href="https://en.wikibooks.org/wiki/Haskell">Haskell
+				  wikibook</a></li>
+
+				<li class="fragment"><a href="http://web.cs.iastate.edu/~lumpe/ComS541/Resources/Lectures/FixedPoints.pdf">Fixed point lecture</a> by Markus Lumpe</li>
+
+			      </ul>
+			  </section>
+
+			  <section>
+			    <h3>Surveying the Language Landscape</h3>
+
+			    <p class="fragment">Languages we've explored thus far:</p>
+
+			    <table style="font-size: 50%">
+			      <tr class="fragment">
+				<th>Name</th>
+				<th>Properties</th>
+			      </tr>
+			      <tr class="fragment">
+				<td><b>System T</b> (PFPL §9)</td>
+				<td>natural numbers, higher-order
+				functions, products, sums, booleans,
+				enumerations, options, totality, type
+				safety</td>
+			      </tr>
+			      <tr class="fragment">
+				<td><b>System M</b> (PFPL §15)</td>
+				<td><i>System T plus</i>
+				(co-)inductive types <i>(via recursion on
+				    types)</i></td>
+			      </tr>
+			      <tr class="fragment">
+				<td><b>System F</b> (PFPL §16)</td>
+				<td><i>System M plus</i> parametric polymorphic types</td>
+			      </tr>
+			      <tr class="fragment">
+				<td><b>System FE</b> (PFPL §17)</td>
+				<td><i>System F plus</i> existentially-quantified types</td>
+			      </tr>
+			      <tr class="fragment">
+				<td><b>System F<sub>ω</sub></b> (PFPL §18)</td>
+				<td><i>System FE plus</i> universally-quantified types</td>
+			      </tr>
+			    </table>
+			  </section>
+
+			  <section>
+			    <h3>Progress is power!</h3>
+
+			    <p class="fragment">With each refinement, we:</p>
+
+			    <ul>
+			      <li class="fragment">Increase generality and reduce type-specific syntax (i.e., derive language constructs from general primitives)</li>
+			      <li class="fragment">Increase expressive power (i.e., more concise code -- think Haskell vs. Java)</li>
+			    </ul>
+
+			    <p class="fragment">... while maintaining type safety and totality</p>
+			  </section>
+
+			  <section>
+			    <h3>However, Something's Missing...</h3>
+
+			    <p class="fragment">System F<sub>ω</sub>
+			    is reasonably expressive, but limited and
+			    cumbersome:</p>
+
+			    <ul>
+			      <li class="fragment">
+				Total languages are not universal<br />
+				<span style="font-size: 75% ;
+				font-style: italic">Cannot interpret a
+				total language in itself, which would
+				require solving the Halting
+				Problem</span>
+			      </li>
+			      <li class="fragment">
+				Programs encode their termination proofs<br />
+				<span style="font-size: 75% ;
+				font-style: italic">Via the inductive
+				definition of natural numbers, on
+				which these languages are based</span>
+			      </li>
+			    </ul>
+			  </section>
+
+			  <section>
+			    <h3>Enter PCF</h3>
+
+			    <p style="font-style: italic ; font-size: 50%">
+			      <a href="https://www.cs.cmu.edu/~kw/scans/scott93tcs.pdf">Scott,
+			      1969</a> |
+			      <a href="http://homepages.inf.ed.ac.uk/gdp/publications/LCF.pdf">Plotkin,
+				1977</a> |
+			      PFPL §19
+			    </p>
+
+			    <p class="fragment">System F<sub>ω</sub>
+			      plus <i>general recursion</i>
+			      via <i>partial functions</i> and
+			      a <i>fixed-point operator</i></p>
+
+			    <p class="fragment">A <i>partial
+				function</i> may diverge for some or
+				all inputs</p>
+
+			    <p class="fragment">Programs remain
+			    well-typed, but may not terminate</p>
+			  </section>
+
+			  <section>
+			    <h3>PCF's Central Tenet</h3>
+
+			    <p class="fragment">Exchange <span style="border:
+			    solid #8080ff 2px">totality</span>
+			    for <span style="border: solid #ff8080
+			    2px">universality</span></p>
+
+			    <p class="fragment"><i>Increase <span style="border: solid #ff8080
+			    2px">expressive
+				  power</span> of programs at the expense of
+				<span style="border: solid #8080ff
+					     2px">termination
+					     guarantees</span></i></p>
+
+			  </section>
+
+			  <section>
+			    <h3>Primitive vs. General Recursion</h3>
+
+			    <p class="fragment">We've relied thus far
+			      on <i>primitive recursion</i>:</p>
+
+			    <ul>
+			      <li class="fragment">System
+				  T's <code>rec()</code> (recursor)
+				  construct (PFPL §9)</li>
+			      <li class="fragment">Recursion without <i>self-reference</i> <i>TRUE?</i></li>
+			      <li class="fragment">Iconic example
+			      functions: addition, multiplication,
+			      factorial</li>
+			    </ul>
+			  </section>
+
+			  <section>
+			    <h3>Primitive vs. General Recursion</h3>
+
+			    <p class="fragment">We define <i>general
+				recursion</i> via the <i>fixed-point operator</i>:</p>
+
+			    <ul>
+			      <li class="fragment">"A fixed point of a
+			      function is a value that, when applied
+			      as the input of the function, returns
+			      the same value as its
+			      output." <span style="font-size: 50% ;
+			      font-style:
+			      italic">(<a href="https://en.wikipedia.org/wiki/Fixed-point_combinator">Wikipedia</a>)</span></li>
+			      <li class="fragment">Symbolically: <code>F(f) = f</code></li>
+			      <li class="fragment">@!#?@!</li>
+			    </ul>
+			  </section>
+
+			  <section>
+			    <h3>Fixed-Point Function</h3>
+
+			    <p class="fragment">A function
+			    named <code>fix</code> that takes a
+			    function and returns the same function</p>
+
+			    <p class="fragment">Big F is technically a <i>functional</i></p>
+
+			    <p class="fragment">
+			      Help!
+
+			      <ul class="fragment">
+				<li>Why does general recursion beget partiality?</li>
+				<li>How is <code>fix</code> fundamentally different from <code>rec</code>?</li>
+			      </ul>
+			    </p>
+			  </section>
+
+			  <section>
+			    <h3>Wait, what just happened?</h3>
+
+			    <p class="fragment">We mandated
+			    that <code>rec()</code> carry around its
+			      base and recursive cases <i>TRUE?</i></p>
+
+			    <p class="fragment"><code>fix</code>
+			    expects its function argument to
+			    supply all of the code <i>TRUE?</i></p>
+			  </section>
+
+			  <section>
+			    <h3>Self-reference begets partiality</h3>
+
+			    <p><i>Per Jake Zimmerman</i></p>
+
+			    <p class="fragment"><code>fix</code> gave us <i>partiality</i> because it also gave us <i>self-reference</i></p>
+
+			    <p class="fragment">A self-referential expression is isomorphic to having an expression with <i>itself in scope</i></p>
+
+			    <p class="fragment">Help! Why does self-reference provide partiality?</p>
+			  </section>
+
+			  <section>
+			    <h3>Partiality begets universality</h3>
+
+			    <p class="fragment">PFPL §9.4
+			      (inscrutably) proves why totality <i>prevents</i>
+			    universality</p>
+
+			    <p class="fragment">PFPL §19.3
+			    (inscrutably) argues that PCF is
+			    universal (i.e., can interpret itself)</p>
+
+			    <p class="fragment">Help! Why does partiality imply universality?</p>
+			  </section>
+
+			  <section>
+			    <h3>General Recursion's Code Pattern</h3>
+
+			    <pre class="fragment"><code>fix (function) (function's arguments)</code></pre>
+
+			    <p class="fragment">One can "refactor" any
+			    recursive function following this
+			    pattern</p>
+
+			    <p class="fragment">The challenge is
+			    shrinking the computation closer to
+			    termination at each step</p>
+			  </section>
+
+			  <section>
+			    <h3>Haskell's <code>fix</code></h3>
+
+			    <p class="fragment">Haskell's <code>Data.Function</code>
+			    module defines <code>fix</code>:</p>
+
+			    <pre class="fragment"><code>Prelude> import Data.Function
+Prelude Data.Function> :info fix
+fix :: (a -> a) -> a</code></pre>
+
+			    <p class="fragment">Its implementation is simple but subtle:</p>
+
+			    <pre class="fragment"><code>fix f = let x = f x in x</code></pre>
+
+			    <p class="fragment">The type signature
+			      means, "Give me a function from a to a,
+			      and I'll give you an a"</p>
+			  </section>
+
+			  <!--
+			  <section>
+			    <h3>Let's Define Our Own</h3>
+
+			    <pre class="fragment"><code>Prelude> let converge f = let x = f x in x
+Prelude> :info converge
+converge :: (t -> t) -> t</code></pre>
+
+			    <p class="fragment">I consider <code>converge</code> a more intuitive notion</p>
+
+			    <p class="fragment">Same shape, different type variable</p>
+			  </section>
+			  -->
+
+			  <section>
+			    <h3>Factorial using <code>fix</code></h3>
+
+			    <p class="fragment" style="text-align: left ; font-size: 50%">
+			      <code>Prelude> let fact = fix (\f -> \n -> if n == 0 then 1 else n * f <span style="border: 1px solid white">(n-1)</span>)<br />
+Prelude> :info fact<br />
+fact :: (Eq p, Num p) => p -> p<br />
+Prelude> fact 5<br />
+120</code>
+			    </p>
+
+			    <p class="fragment">We pass fix an
+			    anonymous function taking "f", a reference
+			    to itself, and "n", an integer, and
+			      computes <code>n!</code></p>
+
+			    <p class="fragment">I <span style="border: 1px solid white">highlighted</span> where the computation "shrinks" toward termination</p>
+			  </section>
+
+			  <section>
+			    <h3>Expanding an infinite series</h3>
+
+			    <div class="fragment">
+			      <p>What does this infinite series represent?</p>
+
+			      <p>1/1! + 2/2! + 3/3! + ...</p>
+			    </div>
+
+			    <p style="font-size: 50% ; text-align: left"><code class="fragment">Prelude> let series = fix (\f -> \i -> if i == 1 then 1 else i/(fact i) + f <span style="border: 1px solid white">(i - 1)</span>)<br />
+Prelude> series 1<br />
+1.0<br />
+Prelude> series 2<br />
+2.0<br />
+Prelude> series 5<br />
+2.708333333333333<br />
+Prelude> series 10<br />
+2.7182815255731922</code></p>
+
+			    <p class="fragment">It converges
+			    to <i>e</i> as the approximation
+			    improves</p>
+			  </section>
+
+			  <section>
+			    <h3>Divergence made easy!</h3>
+
+			    <p class="fragment">These expressions diverge -- why?</p>
+
+			    <pre class="fragment"><code>fix id</code></pre>
+
+			    <pre class="fragment"><code>fix (0:)</code></pre>
+
+			    <pre class="fragment"><code>fix (\n -> n + 1)</code></pre>
+
+			    <p class="fragment">Answer: their computations don't shrink each iteration</p>
+			  </section>
+
+			  <section>
+			    <h3>Resources for grokking fixed-points</h3>
+
+			    <div style="font-size: 75%">
+			      <p class="fragment">
+				<a href="https://www.cs.cmu.edu/~rwh/courses/ppl/">CMU
+				15-312</a> recitation notes
+				by <a href="https://www.cs.cmu.edu/~rwh/courses/ppl/recitations/rec07-partiality-jezimmer.pdf">Jake
+				Zimmerman</a>
+				and <a href="https://www.cs.cmu.edu/~rwh/courses/ppl/recitations/rec7-notes.pdf">Charles
+				Yuan</a>
+			      </p>
+
+			      <p class="fragment">
+				<a href="https://www.vex.net/~trebla/haskell/fix.xhtml">You
+				  could have re-invented fix too!</a> by
+				Albert Y. C. Lai
+			      </p>
+
+			      <p class="fragment">
+				<a href="https://hisham.hm/2011/04/04/understanding-at-last-the-y-combinator-a-programmer-friendly-perspective/">Understanding,
+				  at last, the Y Combinator - a
+				  programmer-friendly perspective</a> by
+				Hisham Muhammad
+			      </p>
+
+			      <p class="fragment">
+				<a href="https://en.wikibooks.org/wiki/Haskell/Fix_and_recursion">Fix
+				  and recursion</a> in
+				  the <a href="https://en.wikibooks.org/wiki/Haskell">Haskell
+				  wikibook</a>
+			      </p>
+
+			      <p class="fragment">
+				<a href="http://web.cs.iastate.edu/~lumpe/ComS541/Resources/Lectures/FixedPoints.pdf">Fixed point lecture</a> by Markus Lumpe
+			      </p>
+			    </div>
+			  </section>
+
+			  <section>
+			    <h3>Miscellani</h3>
+
+			    <p class="fragment">Lazy vs. eager
+			    dynamics become subtle because
+			    sub-computations may diverge</p>
+
+			    <p class="fragment">PCF inspired ML and Haskell</p>
+			  </section>
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+		  Reveal.initialize({
+		    dependencies: [
+		      { src: 'plugin/markdown/marked.js' },
+		      { src: 'plugin/markdown/markdown.js' },
+		      { src: 'plugin/notes/notes.js', async: true },
+		      { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+		    ],
+		    width: 960
+		  });
+		</script>
+	</body>
+</html>
