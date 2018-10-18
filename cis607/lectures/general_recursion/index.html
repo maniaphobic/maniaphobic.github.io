@@ -344,12 +344,12 @@ Prelude> fact 5<br />
 			    <h3>Expanding an infinite series</h3>
 
 			    <div class="fragment">
-			      <p>What does this infinite series represent?</p>
+			      <p>What does this series represent?</p>
 
 			      <p>1/1! + 2/2! + 3/3! + ...</p>
 			    </div>
 
-			    <p style="font-size: 50% ; text-align: left"><code class="fragment">Prelude> let series = fix (\f -> \i -> if i == 1 then 1 else i/(fact i) + f <span style="background: white ; color: black">(i - 1)</span>)<br />
+			    <p style="font-size: 50% ; text-align: left"><code class="fragment">Prelude> let series = fix (\f -> \n -> if n < 2 then 1 else n/(fact n) + f <span style="background: white ; color: black">(i - 1)</span>)<br />
 Prelude> series 1<br />
 1.0<br />
 Prelude> series 2<br />
